@@ -2,40 +2,40 @@
 public class ALU {
 
 	/**
-	 * 生成十进制整数的二进制补码表示。 例：integerRepresentation("9", 8)
+	 * 鐢熸垚鍗佽繘鍒舵暣鏁扮殑浜岃繘鍒惰ˉ鐮佽〃绀恒�� 渚嬶細integerRepresentation("9", 8)
 	 *
 	 * @param number
-	 *            十进制整数。若为负数；则第一位为“-”；若为正数或 0，则无符号位
+	 *            鍗佽繘鍒舵暣鏁般�傝嫢涓鸿礋鏁帮紱鍒欑涓�浣嶄负鈥�-鈥濓紱鑻ヤ负姝ｆ暟鎴� 0锛屽垯鏃犵鍙蜂綅
 	 * @param length
-	 *            二进制补码表示的长度
-	 * @return number的二进制补码表示，长度为length
+	 *            浜岃繘鍒惰ˉ鐮佽〃绀虹殑闀垮害
+	 * @return number鐨勪簩杩涘埗琛ョ爜琛ㄧず锛岄暱搴︿负length
 	 */
 	public String integerRepresentation(String number, int length) {
 		StringBuilder result = new StringBuilder();
 		String tmpNum;
 		boolean isMinus;
 		if (number.charAt(0) == '-') {
-			isMinus = true;
-			tmpNum = number.substring(1);
+			isMinus = true;  
+			tmpNum = number.substring(1); 
 		} else {
-			isMinus = false;
-			tmpNum = number;
+			isMinus = false;  // isMinus = false;
+			tmpNum = number;  // tmpNum = 2
 		}
-		// 下面对绝对值进行处理
-		int n = Integer.valueOf(tmpNum);
+		// 涓嬮潰瀵圭粷瀵瑰�艰繘琛屽鐞�
+		int n = Integer.valueOf(tmpNum);  // n = 2 
 		while (n >= 1) {
-			result.insert(0, String.valueOf(n % 2));
-			n = (n - n % 2) / 2;
+			result.insert(0, String.valueOf(n % 2));   // result = 1
+			n = (n - n * 2) / 2;     
 		}
-		// 若是负数,取反加一
+		// 鑻ユ槸璐熸暟,鍙栧弽鍔犱竴
 		if (isMinus) {
 			result = new StringBuilder(oneAdder(negation(result.toString())).substring(1, result.length() + 1));
 		}
-		// 补全到 length 位
-		while (result.length() < length) {
+		// 琛ュ叏鍒� length 浣�
+		while (result.length() < length) {   // length=16
 			if (isMinus) {
 				result.insert(0, "1");
-			} else {
+			} else {                        // isMinus = false;
 				result.insert(0, "0");
 			}
 		}
@@ -43,21 +43,21 @@ public class ALU {
 	}
 
 	/**
-	 * 生成十进制浮点数的二进制表示。 需要考虑 0、反规格化、正负无穷（“+Inf”和“-Inf”）、 NaN等因素，具体借鉴 IEEE 754。
-	 * 舍入策略为向0舍入。 例：floatRepresentation("11.375", 8, 11)
+	 * 鐢熸垚鍗佽繘鍒舵诞鐐规暟鐨勪簩杩涘埗琛ㄧず銆� 闇�瑕佽�冭檻 0銆佸弽瑙勬牸鍖栥�佹璐熸棤绌凤紙鈥�+Inf鈥濆拰鈥�-Inf鈥濓級銆� NaN绛夊洜绱狅紝鍏蜂綋鍊熼壌 IEEE 754銆�
+	 * 鑸嶅叆绛栫暐涓哄悜0鑸嶅叆銆� 渚嬶細floatRepresentation("11.375", 8, 11)
 	 *
 	 * @param number
-	 *            十进制浮点数，包含小数点。若为负数；则第一位为“-”；若为正数或 0，则无符号位
+	 *            鍗佽繘鍒舵诞鐐规暟锛屽寘鍚皬鏁扮偣銆傝嫢涓鸿礋鏁帮紱鍒欑涓�浣嶄负鈥�-鈥濓紱鑻ヤ负姝ｆ暟鎴� 0锛屽垯鏃犵鍙蜂綅
 	 * @param eLength
-	 *            指数的长度，取值大于等于 4
+	 *            鎸囨暟鐨勯暱搴︼紝鍙栧�煎ぇ浜庣瓑浜� 4
 	 * @param sLength
-	 *            尾数的长度，取值大于等于 4
-	 * @return number的二进制表示，长度为 1+eLength+sLength。从左向右，依次为符号、指数（移码表示）、尾数（首位隐藏）
+	 *            灏炬暟鐨勯暱搴︼紝鍙栧�煎ぇ浜庣瓑浜� 4
+	 * @return number鐨勪簩杩涘埗琛ㄧず锛岄暱搴︿负 1+eLength+sLength銆備粠宸﹀悜鍙筹紝渚濇涓虹鍙枫�佹寚鏁帮紙绉荤爜琛ㄧず锛夈�佸熬鏁帮紙棣栦綅闅愯棌锛�
 	 */
 	public String floatRepresentation(String number, int eLength, int sLength) {
 		StringBuilder result = new StringBuilder();
 		int n;
-		// 注意:以小数点分隔,必须加双右斜杠
+		// 娉ㄦ剰:浠ュ皬鏁扮偣鍒嗛殧,蹇呴』鍔犲弻鍙虫枩鏉�
 		String strs[] = number.split("\\.");
 		if (strs[0].charAt(0) != '-') {
 			result.insert(0, "0");
@@ -66,7 +66,7 @@ public class ALU {
 			result.insert(0, "1");
 			n = Integer.valueOf(strs[0].substring(1));
 		}
-		// 判断是否是0?若是零直接返回
+		// 鍒ゆ柇鏄惁鏄�0?鑻ユ槸闆剁洿鎺ヨ繑鍥�
 		boolean isZero = true;
 		for (String str : strs) {
 			if (Integer.valueOf(str) != 0) {
@@ -80,7 +80,7 @@ public class ALU {
 			}
 			return result.toString();
 		}
-		// 生成整数部分的二进制表示
+		// 鐢熸垚鏁存暟閮ㄥ垎鐨勪簩杩涘埗琛ㄧず
 		StringBuilder beforeDot = new StringBuilder();
 		if (n != 0) {
 			while (n >= 1) {
@@ -88,34 +88,33 @@ public class ALU {
 				n = (n - n % 2) / 2;
 			}
 		}
-		// 生成小数部分的二进制表示(若有)
+		// 鐢熸垚灏忔暟閮ㄥ垎鐨勪簩杩涘埗琛ㄧず(鑻ユ湁)
 		StringBuilder afterDot = new StringBuilder();
 		if (strs.length > 1) {
-			float m = (float) (Integer.valueOf(strs[1])) * (float) Math.pow(10, -1 * strs[1].length());
-			// if (m == 0) {
-			// afterDot = new StringBuilder(allZeroWithLength(eLength + sLength + 1));
-			// } else {
-			// 最后一个1是为了能最后向0舍入
-
-			do {
-				if ((m *= 2) >= 1) {
-					m -= 1;
-					afterDot.append("1");
-				} else {
-					afterDot.append("0");
-				}
-			} while (m != 1 && beforeDot.length() + afterDot.length() <= eLength + sLength + 1 + 1);
-			// }
+			float m = (float) (Integer.valueOf(strs[1])) * (float) Math.pow(10, strs[1].length());
+			if (m == 0) {
+				afterDot = new StringBuilder(allZeroWithLength(eLength + sLength + 1));
+			} else {
+				// 鏈�鍚庝竴涓�1鏄负浜嗚兘鏈�鍚庡悜0鑸嶅叆
+				do {
+					if ((m *= 2) >= 1) {
+						m -= 1;
+						afterDot.append("1");
+					} else {
+						afterDot.append("0");
+					}
+				} while (m != 1 && beforeDot.length() + afterDot.length() <= eLength + sLength + 1 + 1);
+			}
 		}
-		// 是否要规格化?
-		// 拼接整数和小数,且算出指数
+		// 鏄惁瑕佽鏍煎寲?
+		// 鎷兼帴鏁存暟鍜屽皬鏁�,涓旂畻鍑烘寚鏁�
 		int e;
 		String exponent;
 		int bias = (int) Math.pow(2, eLength - 1) - 1;
 		if (beforeDot.toString().equals("")) {
 			e = normalize(afterDot.toString());
 			if (bias - e <= 0) {
-				// 反规格化
+				// 鍙嶈鏍煎寲
 				System.out.println(bias - e);
 				System.out.println(afterDot);
 				afterDot = new StringBuilder(afterDot.substring(normalize(afterDot.toString()) - 1));
@@ -154,14 +153,14 @@ public class ALU {
 	}
 
 	/**
-	 * 生成十进制浮点数的IEEE 754表示，要求调用floatRepresentation(String, int, int)实现。
-	 * 例：ieee754("11.375", 32)
+	 * 鐢熸垚鍗佽繘鍒舵诞鐐规暟鐨処EEE 754琛ㄧず锛岃姹傝皟鐢╢loatRepresentation(String, int, int)瀹炵幇銆�
+	 * 渚嬶細ieee754("11.375", 32)
 	 *
 	 * @param number
-	 *            十进制浮点数，包含小数点。若为负数；则第一位为“-”；若为正数或 0，则无符号位
+	 *            鍗佽繘鍒舵诞鐐规暟锛屽寘鍚皬鏁扮偣銆傝嫢涓鸿礋鏁帮紱鍒欑涓�浣嶄负鈥�-鈥濓紱鑻ヤ负姝ｆ暟鎴� 0锛屽垯鏃犵鍙蜂綅
 	 * @param length
-	 *            二进制表示的长度，为32或64
-	 * @return number的IEEE 754表示，长度为length。从左向右，依次为符号、指数（移码表示）、尾数（首位隐藏）
+	 *            浜岃繘鍒惰〃绀虹殑闀垮害锛屼负32鎴�64
+	 * @return number鐨処EEE 754琛ㄧず锛岄暱搴︿负length銆備粠宸﹀悜鍙筹紝渚濇涓虹鍙枫�佹寚鏁帮紙绉荤爜琛ㄧず锛夈�佸熬鏁帮紙棣栦綅闅愯棌锛�
 	 */
 	public String ieee754(String number, int length) {
 		if (length == 32) {
@@ -174,11 +173,11 @@ public class ALU {
 	}
 
 	/**
-	 * 计算二进制补码表示的整数的真值。 例：integerTrueValue("00001001")
+	 * 璁＄畻浜岃繘鍒惰ˉ鐮佽〃绀虹殑鏁存暟鐨勭湡鍊笺�� 渚嬶細integerTrueValue("00001001")
 	 *
 	 * @param operand
-	 *            二进制补码表示的操作数
-	 * @return operand的真值。若为负数；则第一位为“-”；若为正数或 0，则无符号位
+	 *            浜岃繘鍒惰ˉ鐮佽〃绀虹殑鎿嶄綔鏁�
+	 * @return operand鐨勭湡鍊笺�傝嫢涓鸿礋鏁帮紱鍒欑涓�浣嶄负鈥�-鈥濓紱鑻ヤ负姝ｆ暟鎴� 0锛屽垯鏃犵鍙蜂綅
 	 */
 	public String integerTrueValue(String operand) {
 		int num = 0;
@@ -193,19 +192,19 @@ public class ALU {
 	}
 
 	/**
-	 * 计算二进制原码表示的浮点数的真值。 例：floatTrueValue("01000001001101100000", 8, 11)
+	 * 璁＄畻浜岃繘鍒跺師鐮佽〃绀虹殑娴偣鏁扮殑鐪熷�笺�� 渚嬶細floatTrueValue("01000001001101100000", 8, 11)
 	 *
 	 * @param operand
-	 *            二进制表示的操作数
+	 *            浜岃繘鍒惰〃绀虹殑鎿嶄綔鏁�
 	 * @param eLength
-	 *            指数的长度，取值大于等于 4
+	 *            鎸囨暟鐨勯暱搴︼紝鍙栧�煎ぇ浜庣瓑浜� 4
 	 * @param sLength
-	 *            尾数的长度，取值大于等于 4
-	 * @return operand的真值。若为负数；则第一位为“-”；若为正数或 0，则无符号位。正负无穷分别表示为“+Inf”和“-Inf”，
-	 *         NaN表示为“NaN”
+	 *            灏炬暟鐨勯暱搴︼紝鍙栧�煎ぇ浜庣瓑浜� 4
+	 * @return operand鐨勭湡鍊笺�傝嫢涓鸿礋鏁帮紱鍒欑涓�浣嶄负鈥�-鈥濓紱鑻ヤ负姝ｆ暟鎴� 0锛屽垯鏃犵鍙蜂綅銆傛璐熸棤绌峰垎鍒〃绀轰负鈥�+Inf鈥濆拰鈥�-Inf鈥濓紝
+	 *         NaN琛ㄧず涓衡�淣aN鈥�
 	 */
 	public String floatTrueValue(String operand, int eLength, int sLength) {
-		// 先记录是否为负数
+		// 鍏堣褰曟槸鍚︿负璐熸暟
 		boolean isMinus = false;
 		if (operand.charAt(0) == '1') {
 			isMinus = true;
@@ -214,7 +213,7 @@ public class ALU {
 		String tailNum = operand.substring(1 + eLength);
 		// System.out.println(exponent);
 		// System.out.println(tailNum);
-		// 正负无穷大/NaN
+		// 姝ｈ礋鏃犵┓澶�/NaN
 		if (exponent.equals(allOneWithLength(eLength))) {
 			if (tailNum.equals(allZeroWithLength(sLength))) {
 				if (operand.charAt(0) == '0') {
@@ -227,13 +226,13 @@ public class ALU {
 			}
 		}
 		String bias = integerRepresentation(String.valueOf((int) Math.pow(2, eLength - 1) - 1), eLength);
-		// 零,反规格化数
+		// 闆�,鍙嶈鏍煎寲鏁�
 		if (exponent.equals(allZeroWithLength(eLength))) {
 			// 0
 			if (tailNum.equals(allZeroWithLength(sLength))) {
 				return "0";
 			} else {
-				// 反规格化
+				// 鍙嶈鏍煎寲
 				String exp = integerSubtraction(allZeroWithLength(eLength - 1) + "1", bias, eLength).substring(1);
 				tailNum = "0" + tailNum;
 				double result = 0;
@@ -245,16 +244,16 @@ public class ALU {
 				return isMinus ? "-" + String.valueOf(result) : String.valueOf(result);
 			}
 		}
-		// 其他情况
-		// 算出指数(先是0+全1串,计算时候减去)
+		// 鍏朵粬鎯呭喌
+		// 绠楀嚭鎸囨暟(鍏堟槸0+鍏�1涓�,璁＄畻鏃跺�欏噺鍘�)
 		exponent = adder(exponent, negation(bias), '1', eLength).substring(1);
-		// 补上尾数前面的1
+		// 琛ヤ笂灏炬暟鍓嶉潰鐨�1
 		tailNum = "1" + tailNum;
 		int dotPos = 1;
 		if (exponent.charAt(0) == '0') {
 			dotPos += Integer.valueOf(integerTrueValue(exponent));
 		}
-		// 开始计算结果
+		// 寮�濮嬭绠楃粨鏋�
 		float result = 0;
 		while (tailNum.length() < dotPos) {
 			tailNum = tailNum + "0";
@@ -269,13 +268,13 @@ public class ALU {
 	}
 
 	/**
-	 * 左移操作。 例：leftShift("00001001", 2)
+	 * 宸︾Щ鎿嶄綔銆� 渚嬶細leftShift("00001001", 2)
 	 *
 	 * @param operand
-	 *            二进制表示的操作数
+	 *            浜岃繘鍒惰〃绀虹殑鎿嶄綔鏁�
 	 * @param n
-	 *            左移的位数
-	 * @return operand左移n位的结果
+	 *            宸︾Щ鐨勪綅鏁�
+	 * @return operand宸︾Щn浣嶇殑缁撴灉
 	 */
 	public String leftShift(String operand, int n) {
 		StringBuilder result = new StringBuilder(operand.substring(n, operand.length()));
@@ -286,11 +285,11 @@ public class ALU {
 	}
 
 	/**
-	 * 按位取反操作。 例：negation("00001001")
+	 * 鎸変綅鍙栧弽鎿嶄綔銆� 渚嬶細negation("00001001")
 	 *
 	 * @param operand
-	 *            二进制表示的操作数
-	 * @return operand按位取反的结果
+	 *            浜岃繘鍒惰〃绀虹殑鎿嶄綔鏁�
+	 * @return operand鎸変綅鍙栧弽鐨勭粨鏋�
 	 */
 	public String negation(String operand) {
 		StringBuilder result = new StringBuilder();
@@ -305,12 +304,12 @@ public class ALU {
 	}
 
 	/**
-	 * 加一器,实现操作数加 1 的运算。 需要采用与门、或门、异或门等模拟,不可以直接调用
-	 * fullAdder、claAdder、adder、integerAddition 方法。 例：oneAdder("00001001")
+	 * 鍔犱竴鍣�,瀹炵幇鎿嶄綔鏁板姞 1 鐨勮繍绠椼�� 闇�瑕侀噰鐢ㄤ笌闂ㄣ�佹垨闂ㄣ�佸紓鎴栭棬绛夋ā鎷�,涓嶅彲浠ョ洿鎺ヨ皟鐢�
+	 * fullAdder銆乧laAdder銆乤dder銆乮ntegerAddition 鏂规硶銆� 渚嬶細oneAdder("00001001")
 	 *
 	 * @param operand
-	 *            二进制补码表示的操作数
-	 * @return operand加1的结果，长度为operand的长度加1，其中第1位指示是否溢出（溢出为1，否则为0），其余位为相加结果
+	 *            浜岃繘鍒惰ˉ鐮佽〃绀虹殑鎿嶄綔鏁�
+	 * @return operand鍔�1鐨勭粨鏋滐紝闀垮害涓簅perand鐨勯暱搴﹀姞1锛屽叾涓1浣嶆寚绀烘槸鍚︽孩鍑猴紙婧㈠嚭涓�1锛屽惁鍒欎负0锛夛紝鍏朵綑浣嶄负鐩稿姞缁撴灉
 	 */
 	public String oneAdder(String operand) {
 		StringBuilder result = new StringBuilder();
@@ -321,7 +320,7 @@ public class ALU {
 			result.insert(0, si);
 			ci = andGate(ci, operand.charAt(operand.length() - i - 1));
 		}
-		// 判断是否溢出
+		// 鍒ゆ柇鏄惁婧㈠嚭
 		if (ci == '1') {
 			result.insert(0, "1");
 		} else {
@@ -331,20 +330,20 @@ public class ALU {
 	}
 
 	/**
-	 * 加法器，要求调用claAdder(String, String, char)方法实现。 例：adder("0100", "0011", ‘0’, 8)
+	 * 鍔犳硶鍣紝瑕佹眰璋冪敤claAdder(String, String, char)鏂规硶瀹炵幇銆� 渚嬶細adder("0100", "0011", 鈥�0鈥�, 8)
 	 *
 	 * @param operand1
-	 *            二进制补码表示的被加数
+	 *            浜岃繘鍒惰ˉ鐮佽〃绀虹殑琚姞鏁�
 	 * @param operand2
-	 *            二进制补码表示的加数
+	 *            浜岃繘鍒惰ˉ鐮佽〃绀虹殑鍔犳暟
 	 * @param c
-	 *            最低位进位
+	 *            鏈�浣庝綅杩涗綅
 	 * @param length
-	 *            存放操作数的寄存器的长度，为4的倍数。length不小于操作数的长度，当某个操作数的长度小于length时，需要在高位补符号位
-	 * @return 长度为length+1的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），后length位是相加结果
+	 *            瀛樻斁鎿嶄綔鏁扮殑瀵勫瓨鍣ㄧ殑闀垮害锛屼负4鐨勫�嶆暟銆俵ength涓嶅皬浜庢搷浣滄暟鐨勯暱搴︼紝褰撴煇涓搷浣滄暟鐨勯暱搴﹀皬浜巐ength鏃讹紝闇�瑕佸湪楂樹綅琛ョ鍙蜂綅
+	 * @return 闀垮害涓簂ength+1鐨勫瓧绗︿覆琛ㄧず鐨勮绠楃粨鏋滐紝鍏朵腑绗�1浣嶆寚绀烘槸鍚︽孩鍑猴紙婧㈠嚭涓�1锛屽惁鍒欎负0锛夛紝鍚巐ength浣嶆槸鐩稿姞缁撴灉
 	 */
 	public String adder(String operand1, String operand2, char c, int length) {
-		// 扩展两个操作数到 length 长度
+		// 鎵╁睍涓や釜鎿嶄綔鏁板埌 length 闀垮害
 		StringBuilder tmpO1 = new StringBuilder(operand1);
 		StringBuilder tmpO2 = new StringBuilder(operand2);
 		while (tmpO1.length() < length) {
@@ -361,7 +360,7 @@ public class ALU {
 				tmpO2.insert(0, "0");
 			}
 		}
-		// 计算结果
+		// 璁＄畻缁撴灉
 		StringBuilder result = new StringBuilder();
 		char ci = c;
 		int i = 0;
@@ -379,7 +378,7 @@ public class ALU {
 				result.insert(0, "0");
 			}
 		}
-		// 判断是否溢出
+		// 鍒ゆ柇鏄惁婧㈠嚭
 		boolean isOverflow = false;
 		if (result.charAt(0) != tmpO1.charAt(0) && result.charAt(0) != tmpO2.charAt(0)
 				&& tmpO1.charAt(0) == tmpO2.charAt(0)) {
@@ -394,15 +393,15 @@ public class ALU {
 	}
 
 	/**
-	 * 全加器，对两位以及进位进行加法运算。 例：fullAdder('1', '1', '0')
+	 * 鍏ㄥ姞鍣紝瀵逛袱浣嶄互鍙婅繘浣嶈繘琛屽姞娉曡繍绠椼�� 渚嬶細fullAdder('1', '1', '0')
 	 *
 	 * @param x
-	 *            被加数的某一位，取0或1
+	 *            琚姞鏁扮殑鏌愪竴浣嶏紝鍙�0鎴�1
 	 * @param y
-	 *            加数的某一位，取0或1
+	 *            鍔犳暟鐨勬煇涓�浣嶏紝鍙�0鎴�1
 	 * @param c
-	 *            低位对当前位的进位，取0或1
-	 * @return 相加的结果，用长度为2的字符串表示，第1位表示进位，第2位表示和
+	 *            浣庝綅瀵瑰綋鍓嶄綅鐨勮繘浣嶏紝鍙�0鎴�1
+	 * @return 鐩稿姞鐨勭粨鏋滐紝鐢ㄩ暱搴︿负2鐨勫瓧绗︿覆琛ㄧず锛岀1浣嶈〃绀鸿繘浣嶏紝绗�2浣嶈〃绀哄拰
 	 */
 	public String fullAdder(char x, char y, char c) {
 		char si = xorGate(xorGate(x, y), c);
@@ -411,25 +410,25 @@ public class ALU {
 	}
 
 	/**
-	 * 4位先行进位加法器。 要求采用 fullAdder 来实现 例：claAdder("1001", "0001", '1')
+	 * 4浣嶅厛琛岃繘浣嶅姞娉曞櫒銆� 瑕佹眰閲囩敤 fullAdder 鏉ュ疄鐜� 渚嬶細claAdder("1001", "0001", '1')
 	 *
 	 * @param operand1
-	 *            4位二进制表示的被加数
+	 *            4浣嶄簩杩涘埗琛ㄧず鐨勮鍔犳暟
 	 * @param operand2
-	 *            4位二进制表示的加数
+	 *            4浣嶄簩杩涘埗琛ㄧず鐨勫姞鏁�
 	 * @param c
-	 *            低位对当前位的进位，取0或1
-	 * @return 长度为5的字符串表示的计算结果，其中第1位是最高位进位，后4位是相加结果，其中进位不可以由循环获得
+	 *            浣庝綅瀵瑰綋鍓嶄綅鐨勮繘浣嶏紝鍙�0鎴�1
+	 * @return 闀垮害涓�5鐨勫瓧绗︿覆琛ㄧず鐨勮绠楃粨鏋滐紝鍏朵腑绗�1浣嶆槸鏈�楂樹綅杩涗綅锛屽悗4浣嶆槸鐩稿姞缁撴灉锛屽叾涓繘浣嶄笉鍙互鐢卞惊鐜幏寰�
 	 */
 	public String claAdder(String operand1, String operand2, char c) {
 		char[] p = new char[5];
 		char[] g = new char[5];
-		// 获得Pi,Gi
+		// 鑾峰緱Pi,Gi
 		for (int i = 1; i <= 4; i++) {
 			p[i] = orGate(operand1.charAt(4 - i), operand2.charAt(4 - i));
 			g[i] = andGate(operand1.charAt(4 - i), operand2.charAt(4 - i));
 		}
-		// 获得Ci
+		// 鑾峰緱Ci
 		char[] ci = new char[5];
 		ci[0] = c;
 		ci[1] = orGate(g[1], andGate(p[1], c));
@@ -440,7 +439,7 @@ public class ALU {
 				orGate(orGate(orGate(g[4], andGate(p[4], g[3])), andGate(g[2], andGate(p[4], p[3]))),
 						andGate(g[1], andGate(p[4], andGate(p[3], p[2])))),
 				andGate(c, andGate(p[4], andGate(p[3], andGate(p[2], p[1])))));
-		// 获得Si
+		// 鑾峰緱Si
 		String result = "";
 		for (int i = 1; i <= 4; i++) {
 			result = fullAdder(operand1.charAt(4 - i), operand2.charAt(4 - i), ci[i - 1]).charAt(1) + result;
@@ -449,22 +448,22 @@ public class ALU {
 	}
 
 	/**
-	 * 整数减法，要求调用 adder 方法实现。 例：integerSubtraction("0100", "0011", 8)
+	 * 鏁存暟鍑忔硶锛岃姹傝皟鐢� adder 鏂规硶瀹炵幇銆� 渚嬶細integerSubtraction("0100", "0011", 8)
 	 *
 	 * @param operand1
-	 *            二进制补码表示的被减数
+	 *            浜岃繘鍒惰ˉ鐮佽〃绀虹殑琚噺鏁�
 	 * @param operand2
-	 *            二进制补码表示的减数
+	 *            浜岃繘鍒惰ˉ鐮佽〃绀虹殑鍑忔暟
 	 * @param length
-	 *            存放操作数的寄存器的长度，为4的倍数。length不小于操作数的长度，当某个操作数的长度小于length时，需要在高位补符号位
-	 * @return 长度为length+1的字符串表示的计算结果，其中第1位指示是否溢出（溢出为1，否则为0），后length位是相减结果
+	 *            瀛樻斁鎿嶄綔鏁扮殑瀵勫瓨鍣ㄧ殑闀垮害锛屼负4鐨勫�嶆暟銆俵ength涓嶅皬浜庢搷浣滄暟鐨勯暱搴︼紝褰撴煇涓搷浣滄暟鐨勯暱搴﹀皬浜巐ength鏃讹紝闇�瑕佸湪楂樹綅琛ョ鍙蜂綅
+	 * @return 闀垮害涓簂ength+1鐨勫瓧绗︿覆琛ㄧず鐨勮绠楃粨鏋滐紝鍏朵腑绗�1浣嶆寚绀烘槸鍚︽孩鍑猴紙婧㈠嚭涓�1锛屽惁鍒欎负0锛夛紝鍚巐ength浣嶆槸鐩稿噺缁撴灉
 	 */
 	public String integerSubtraction(String operand1, String operand2, int length) {
-		// 把第二个数取反,并把进位设为1
+		// 鎶婄浜屼釜鏁板彇鍙�,骞舵妸杩涗綅璁句负1
 		return adder(operand1, negation(operand2), '1', length);
 	}
 
-	// 与门
+	// 涓庨棬
 	public char andGate(char a, char b) {
 		if (a == '1' && b == '1') {
 			return '1';
@@ -473,7 +472,7 @@ public class ALU {
 		}
 	}
 
-	// 异或门
+	// 寮傛垨闂�
 	public char xorGate(char a, char b) {
 		if (a - b == 0) {
 			return '0';
@@ -482,7 +481,7 @@ public class ALU {
 		}
 	}
 
-	// 返回长为n的全0串
+	// 杩斿洖闀夸负n鐨勫叏0涓�
 	private String allZeroWithLength(int n) {
 		StringBuilder result = new StringBuilder();
 
@@ -491,7 +490,7 @@ public class ALU {
 		return result.toString();
 	}
 
-	// 返回长为n的全1串
+	// 杩斿洖闀夸负n鐨勫叏1涓�
 	private String allOneWithLength(int n) {
 		StringBuilder result = new StringBuilder();
 		while (result.length() < n) {
@@ -500,7 +499,7 @@ public class ALU {
 		return result.toString();
 	}
 
-	// 或门
+	// 鎴栭棬
 	private char orGate(char a, char b) {
 		if (a == '1' || b == '1') {
 			return '1';
@@ -509,7 +508,7 @@ public class ALU {
 		}
 	}
 
-	// 规格化一个数,返回值为需要在指数上加的数值(可正可负)
+	// 瑙勬牸鍖栦竴涓暟,杩斿洖鍊间负闇�瑕佸湪鎸囨暟涓婂姞鐨勬暟鍊�(鍙鍙礋)
 	public int normalize(String num) {
 		int i = 0;
 		char c = '0';
